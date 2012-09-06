@@ -71,6 +71,7 @@ public OnPluginEnd()
 public bool:OnClientConnect(client, String:rejectmsg[], maxlen)
 {
   LogMessage("OnClientConnect");
+  return true;
 }
 
 public OnClientAuthorized(client, const String:auth[])
