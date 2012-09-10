@@ -4,9 +4,9 @@
 
 public Plugin:myinfo =  
 {
-  name = "test",
+  name = "Remove cheat flags",
   author = "kimoto",
-  description = "test",
+  description = "Remove cheat flags from specified command",
   version = PLUGIN_VERSION,
   url = "http://kymt.me/"
 };
