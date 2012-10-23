@@ -1,5 +1,4 @@
 #pragma semicolon 1
-
 #include <sourcemod>
 #include <steamtools>
 #define PLUGIN_VERSION "1.0.0"
@@ -7,9 +6,9 @@
 
 public Plugin:myinfo =  
 {
-  name = "server quit if empty",
+  name = "Server Quit If Empty",
   author = "kimoto",
-  description = "server quit if empty",
+  description = "Server Quit If Empty",
   version = PLUGIN_VERSION,
   url = "http://kymt.me/"
 };
@@ -18,7 +17,6 @@ new Handle:g_timer = INVALID_HANDLE;
 
 public Action:Timer_ServerQuit(Handle:timer, any:client)
 {
-  DebugPrint("each timer");
   ServerQuitIfEmpty();
 }
 
@@ -55,16 +53,26 @@ public IsServerEmpty()
 
 public ServerQuitIfEmpty()
 {
-  DebugPrint("server quit next empty");
   if( IsServerEmpty() ){
-    DebugPrint("server is empty try to restart");
+    LogMessage("Server is Empty");
     if( g_timer != INVALID_HANDLE){
       KillTimer(g_timer);
       g_timer = INVALID_HANDLE;
     }
+    LogMessage("Sending quit command");
     ServerCommand("quit");
   }else{
-    DebugPrint("server is not empty");
+    LogMessage("Server is not Empty");
+  }
+}
+
+public ServerQuitNextEmpty()
+{
+  if(g_timer == INVALID_HANDLE){
+    ServerQuitIfEmpty();
+    g_timer = CreateTimer(TIMER_INTERVAL, Timer_ServerQuit, 0, TIMER_REPEAT);
+  }else{
+    LogMessage("Already Executed!");
   }
 }
 
@@ -75,18 +83,6 @@ public Action:Command_ServerQuitIfEmpty(args)
 
 public Action:Command_ServerQuitNextEmpty(args)
 {
-  if(g_timer == INVALID_HANDLE){
-    ServerQuitIfEmpty();
-    g_timer = CreateTimer(TIMER_INTERVAL, Timer_ServerQuit, 0, TIMER_REPEAT);
-  }else{
-    DebugPrint("already executed!");
-  }
-}
-
-public DebugPrint(const String:Message[], any:...)
-{
-  decl String:DebugBuff[256];
-  VFormat(DebugBuff, sizeof(DebugBuff), Message, 2);
-  LogMessage(DebugBuff);
+  ServerQuitNextEmpty();
 }
 
